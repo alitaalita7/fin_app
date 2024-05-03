@@ -17,7 +17,7 @@ const SignIn = () => {
         <Text style={styles.buttonText}>Войти</Text>
       </TouchableOpacity>
       <TouchableOpacity>
-        <Text style={styles.registerText}>Нет аккаунта? Зарегистрироваться</Text>
+        <Text style={styles.registerText}>Нет аккаунта?  Зарегистрироваться</Text>
       </TouchableOpacity>
     </View>
   );
