@@ -1,7 +1,15 @@
 import React from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const SignIn = () => {
+
+    const navigation = useNavigation(); // Используем хук useNavigation для доступа к навигации
+  
+    const goToSignUp = () => {
+      navigation.navigate('SignUp'); // Переход на страницу SignUp
+    };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Авторизация</Text>
@@ -16,8 +24,8 @@ const SignIn = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Войти</Text>
       </TouchableOpacity>
-      <TouchableOpacity>
-        <Text style={styles.registerText}>Нет аккаунта?  Зарегистрироваться</Text>
+      <TouchableOpacity onPress={goToSignUp}>
+        <Text style={styles.registerText}>Нет аккаунта? Зарегистрироваться</Text>
       </TouchableOpacity>
     </View>
   );
