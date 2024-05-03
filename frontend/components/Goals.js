@@ -4,8 +4,8 @@ import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'rea
 const Goals = () => {
 
     const [selectedGoalId, setSelectedGoalId] = useState(null);
-    const [progress, setProgress] = useState(75);
-    const [completedGoals, setCompletedGoals] = useState([1,2]);
+    const [progress, setProgress] = useState(150);
+    const [completedGoals, setCompletedGoals] = useState([2]);
 
     const goals = [
         {
@@ -37,10 +37,25 @@ const Goals = () => {
     ];
 
     const renderGoalButton = (goal) => {
+        const costValue = parseFloat(goal.cost.split(' ')[0]);
+
+        const handleBuyButtonPress = () => {
+            setCompletedGoals(prevCompletedGoals => [...prevCompletedGoals, goal.id]);
+            setSelectedGoalId(null)
+        };
+
         if (completedGoals.includes(goal.id)) {
             return null;
         } else if (goal.id === selectedGoalId) {
-            return <Text style={styles.selectedGoalText}>Цель выбрана</Text>;
+            if (progress === costValue) {
+                return (
+                    <TouchableOpacity style={styles.button} onPress={handleBuyButtonPress}>
+                        <Text style={styles.buttonText}>Купить</Text>
+                    </TouchableOpacity>
+                );
+            }else {
+                return <Text style={styles.selectedGoalText}>Цель выбрана</Text>;
+            }
         } else if (selectedGoalId) {
             return <TouchableOpacity style={styles.disabledButton}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
         } else {
