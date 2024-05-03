@@ -47,7 +47,7 @@ const Goals = () => {
         if (completedGoals.includes(goal.id)) {
             return null;
         } else if (goal.id === selectedGoalId) {
-            if (progress === costValue) {
+            if (progress >= costValue) {
                 return (
                     <TouchableOpacity style={styles.button} onPress={handleBuyButtonPress}>
                         <Text style={styles.buttonText}>Купить</Text>
@@ -66,13 +66,14 @@ const Goals = () => {
     const renderGoalProgress = (goal) => {
 
         const costValue = parseFloat(goal.cost.split(' ')[0]);
+        const width = progress > costValue ? '100%' : `${Math.min((progress / costValue) * 100, 100)}%`;
 
         if (completedGoals.includes(goal.id)) {
             return <Text style={styles.completedGoalText}>Цель достигнута!</Text>;
         } else if (goal.id === selectedGoalId) {
             return (
                 <View style={styles.progressContainer}>
-                    <View style={[styles.progressBar, { width: `${(progress / costValue) * 100}%` }]} />
+                    <View style={[styles.progressBar, { width }]} />
                 </View>
             );
         } else if (selectedGoalId) {
