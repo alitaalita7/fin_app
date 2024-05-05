@@ -19,20 +19,10 @@ import XP from '../assets/game/xp.png'
 const Game = () => {
 
     // Установка изначальных чисел, знака, и решения
-    const firstNumber = Math.floor(Math.random() * 11)
-    const [num1, setNum1] = useState(firstNumber);
-    const secondNumber = Math.floor(Math.random() * (firstNumber + 1));
-    const [num2, setNum2] = useState(secondNumber);
-    const operators = ['+', '-'];
-    const randomIndex = Math.floor(Math.random() * operators.length);
-    const [sign, setSign] = useState(operators[randomIndex]);
-    let sol = '';
-    if (operators[randomIndex] === '+') {
-        sol = (firstNumber + secondNumber).toString()  
-    } else if (operators[randomIndex] === '-') {
-        sol = (firstNumber - secondNumber).toString()
-    }
-    const [solution, setSolution] = useState(sol);
+    const [num1, setNum1] = useState(null);
+    const [num2, setNum2] = useState(null);
+    const [sign, setSign] = useState(null);
+    const [solution, setSolution] = useState(null);
 
     const [enteredNumber, setEntederNumber] = useState('')
     const [schoolClass, setSchoolClass] = useState('');
@@ -49,15 +39,16 @@ const Game = () => {
     };
 
     useEffect(() => {
-        setSchoolClass('1')
+        setSchoolClass('1');
         createExample();
+        setSeconds(0);
         const id = setInterval(() => {
             setSeconds(prevSeconds => prevSeconds + 1);
         }, 1000);
         setTimerId(id); // Сохраняем ID интервала в состоянии
         return () => clearInterval(id);
     
-    }, [counter]);
+    }, [schoolClass, counter]);
 
     const createExample = () => {
         switch (schoolClass) {
@@ -94,7 +85,6 @@ const Game = () => {
             setTimeout(() => {
                 setColor('#F7AA2E')
                 setEntederNumber('');
-                setSeconds(0);
                 setCounter(counter + 1);
             }, 2000);
         } else {
@@ -102,7 +92,6 @@ const Game = () => {
             setTimeout(() => {
                 setColor('#F7AA2E')
                 setEntederNumber('');
-                setSeconds(0);
                 setCounter(counter + 1);
             }, 2000);
         };
