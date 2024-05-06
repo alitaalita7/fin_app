@@ -11,6 +11,7 @@ import Settings from './components/Settings';
 import Goals from './components/Goals'
 import Rules from './components/Rules';
 import Game from './components/Game';
+import Main from './components/Main';
 
 
 
@@ -20,6 +21,7 @@ export default function App() {
     <NavigationContainer>
       <View style={styles.container}>
         <Stack.Navigator>
+          <Stack.Screen name="Main" component={Main} options={{ headerShown: false }} />
           <Stack.Screen name="SignUp" component={SignUp} options={{ headerShown: false }} />
           <Stack.Screen name="Game" component={Game} options={{ headerShown: false }} />
           <Stack.Screen name="Rules" component={Rules} options={{ headerShown: false }} />
