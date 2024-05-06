@@ -21,8 +21,13 @@ router.put('/update-image', UserController.updateImage);
 // Маршрут для смены пароля пользователя
 router.put('/change-password', UserController.changePassword);
 
+// POST запрос для добавления завершенной цели
+router.post('/addCompletedGoal', UserController.addCompletedGoal);
+
 // Маршрут для получения информации о пользователе по его ID
 router.get('/:userId', UserController.getUserById);
+
+
 
 module.exports = router;
 

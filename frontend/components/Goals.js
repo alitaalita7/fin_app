@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native';
+import UserContext from './UserContext';
 
 const Goals = () => {
 
-    const [selectedGoalId, setSelectedGoalId] = useState(null);
-    const [progress, setProgress] = useState(150);
-    const [completedGoals, setCompletedGoals] = useState([2]);
+    const {user, setUser} = useContext(UserContext);
+
+    const [selectedGoalId, setSelectedGoalId] = useState(user.selected_goal);
+    const [progress, setProgress] = useState(user.coins);
+    const [completedGoals, setCompletedGoals] = useState(user.completed_goals);
 
     const goals = [
         {
@@ -40,7 +43,9 @@ const Goals = () => {
         const costValue = parseFloat(goal.cost.split(' ')[0]);
 
         const handleBuyButtonPress = () => {
+            
             setCompletedGoals(prevCompletedGoals => [...prevCompletedGoals, goal.id]);
+
             setSelectedGoalId(null)
         };
 
