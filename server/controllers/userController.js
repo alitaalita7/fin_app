@@ -3,8 +3,10 @@ const { User } = require('../models/models');
 class UserController {
 
   async signup(req, res, next) {
+    
     try {
-      const { firstname, surname, login, password, birth, image } = req.body;
+      console.log(req.body);
+      const { login, password, school_class } = req.body;
 
       console.log('Получен запрос на регистрацию пользователя:', req.body);
 
@@ -16,18 +18,20 @@ class UserController {
 
       // Создаем нового пользователя в базе данных
       const newUser = await User.create({
-        firstname,
-        surname,
         login,
-        password, // Сохраняем пароль как есть
-        birth,
-        image,
+        password,
+        school_class,
+        coins: 0,
+        xp: 0,
+        completed_achievements: [],
+        completed_goals: [],
+        selected_goal: null
       });
 
       console.log('Новый пользователь успешно создан:', newUser);
 
       // Отправляем ответ с сообщением об успешной регистрации
-      return res.json({ message: 'Регистрация прошла успешно', user:newUser });
+      return res.json({ message: 'Регистрация прошла успешно', user: newUser });
     } catch (error) {
       console.error('Ошибка регистрации:', error.message);
       next(error);
@@ -44,14 +48,14 @@ class UserController {
 
       // Проверка, существует ли пользователь с таким логином
       if (!user) {
-          return res.status(401).json({ error: 'Логин не найден' });
+        return res.status(401).json({ error: 'Логин не найден' });
       }
 
       console.log(user, user.password, password);
 
       // Проверка правильности пароля
       if (user.password !== password) {
-          return res.status(401).json({ error: 'Неверный пароль' });
+        return res.status(401).json({ error: 'Неверный пароль' });
       }
 
       res.status(200).json({ message: 'Аутентификация успешна', user });
@@ -100,13 +104,13 @@ class UserController {
       if (!user) {
         return res.status(404).json({ error: 'Пользователь не найден' });
       }
-      
+
       // Удаляем изображение пользователя
       user.image = null; // Устанавливаем изображение пользователя как null или пустую строку, в зависимости от вашей модели
       await user.save(); // Сохраняем изменения
-      
+
       console.log('Изображение пользователя успешно удалено');
-      
+
       // Отправляем ответ с сообщением об успешном удалении изображения
       return res.json({ message: 'Изображение пользователя успешно удалено' });
     } catch (error) {
@@ -173,22 +177,22 @@ class UserController {
 
   async getUserById(req, res, next) {
     try {
-        const { userId } = req.params;
+      const { userId } = req.params;
 
-        // Находим пользователя по его ID
-        const user = await User.findByPk(userId);
+      // Находим пользователя по его ID
+      const user = await User.findByPk(userId);
 
-        if (!user) {
-            return res.status(404).json({ error: 'Пользователь не найден' });
-        }
+      if (!user) {
+        return res.status(404).json({ error: 'Пользователь не найден' });
+      }
 
-        // Отправляем информацию о пользователе в ответе
-        return res.json(user);
+      // Отправляем информацию о пользователе в ответе
+      return res.json(user);
     } catch (error) {
-        console.error('Ошибка при получении информации о пользователе:', error.message);
-        next(error);
+      console.error('Ошибка при получении информации о пользователе:', error.message);
+      next(error);
     }
-}
+  }
 
 }
 
