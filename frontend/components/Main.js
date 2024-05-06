@@ -1,13 +1,16 @@
 import React, { useContext, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import UserContext from './UserContext';
+import { useNavigation } from '@react-navigation/native';
 
 const Main = () => {
 
-    const {user, setUser} = useContext(UserContext);
+    // const {user, setUser} = useContext(UserContext);
     const [selectedGoalId, setSelectedGoalId] = useState(null);
-    const [coins, setCoins] = useState(user.coins); // Пример количества монет
-    const [xp, setXP] = useState(500); // Пример опыта
+    const [coins, setCoins] = useState(100); // Пример количества монет
+    const [xp, setXP] = useState(500); // Пример опыта\
+
+    const navigation = useNavigation();
 
     const goals = [
         {
@@ -38,44 +41,52 @@ const Main = () => {
         },
     ];
 
-    const handleSetGoal = () => {
-        // Обработчик установки цели, который открывает страницу с целями
-        // Добавьте соответствующую навигацию
+    const handleSetGoal1 = () => {
+        if (selectedGoalId != null) {
+            navigation.navigate('Goals')
+        }
+    };
+
+    const handleSetGoal2 = () => {
+        navigation.navigate('Goals')
     };
 
     const handleLearnRules = () => {
-        // Обработчик нажатия на кнопку "Узнать правила"
-        // Добавьте соответствующую навигацию
+        navigation.navigate('Rules')
     };
 
     const handleAchievements = () => {
-        // Обработчик нажатия на кнопку "Достижения"
-        // Добавьте соответствующую навигацию
+        navigation.navigate('Achievements')
     };
 
     const handleSettings = () => {
-        // Обработчик нажатия на кнопку "Настройки"
-        // Добавьте соответствующую навигацию
+        navigation.navigate('Settings')
     };
+
+    const handlePlay = () => {
+        navigation.navigate('Game')
+    }
 
     return (
         <View style={styles.container}>
             {/* Верхний правый угол: картинка цели и кнопка "Поставить цель" */}
-            <TouchableOpacity onPress={handleSetGoal}>
+            <TouchableOpacity onPress={handleSetGoal1}>
                 <Image
                     source={selectedGoalId ? goals.find(goal => goal.id === selectedGoalId).image : require('../assets/Goal_image.png')}
                     style={styles.goalImage}
                 />
             </TouchableOpacity>
             {selectedGoalId === null && (
-                <TouchableOpacity onPress={handleSetGoal} style={styles.setGoalButton}>
+                <TouchableOpacity onPress={handleSetGoal2} style={styles.setGoalButton}>
                     <Text style={styles.buttonText}>Выбрать цель</Text>
                 </TouchableOpacity>
             )}
 
             {/* Центр экрана: картинка "Играть" и кнопка "Узнать правила" */}
             <View style={styles.centerContent}>
-                <Image source={require('../assets/Play_button.png')} style={styles.playButton} />
+                <TouchableOpacity onPress={handlePlay}>
+                    <Image source={require('../assets/Play_button.png')} style={styles.playButton} />
+                </TouchableOpacity>
                 <TouchableOpacity onPress={handleLearnRules} style={styles.learnRulesButton}>
                     <Text style={styles.buttonText}>Узнай, как копить деньги</Text>
                 </TouchableOpacity>
