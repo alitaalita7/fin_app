@@ -2,8 +2,41 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 
-const SignUp = () => {
+const SignUp = (props) => {
   const [selectedClass, setSelectedClass] = useState('1');
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeatPassword, setRepeatPassword] = useState('');
+
+  const handleRegister = () => {
+    if (login && password) {
+      if (password !== repeatPassword) alert('Пароли не совпадают');
+      else {
+        const user = { login, password, school_class: selectedClass };
+        fetch('http://10.0.2.2:5000/api/user/signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(user)
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        }).then(data => {
+          console.log('Response:', data);
+          props.navigation.navigate('Game')
+        }).catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+      }
+    } else alert('Логин или пароль не введены');
+  }
+
+  const handleLoginChange = (login) => setLogin(login);
+  const handlePasswordChange = (password) => setPassword(password);
+  const handleRepeatPasswordChange = (repeatPassword) => setRepeatPassword(repeatPassword);
 
   return (
     <View style={styles.container}>
@@ -13,6 +46,8 @@ const SignUp = () => {
           <Text style={styles.label}>Придумай логин</Text>
           <TextInput
             style={styles.input}
+            onChangeText={handleLoginChange}
+            value={login}
           />
         </View>
         <View style={styles.passwordContainer}>
@@ -20,6 +55,8 @@ const SignUp = () => {
             <Text style={styles.label}>Придумай пароль</Text>
             <TextInput
               style={styles.input}
+              onChangeText={handlePasswordChange}
+              value={password}
               secureTextEntry={true}
             />
           </View>
@@ -27,6 +64,8 @@ const SignUp = () => {
             <Text style={styles.label}>Повтори пароль</Text>
             <TextInput
               style={styles.input}
+              onChangeText={handleRepeatPasswordChange}
+              value={repeatPassword}
               secureTextEntry={true}
             />
           </View>
@@ -47,7 +86,7 @@ const SignUp = () => {
           </View>
         </View>
       </View>
-      <TouchableOpacity style={styles.buttonContainer}>
+      <TouchableOpacity style={styles.buttonContainer} onPress={handleRegister}>
         <Text style={styles.buttonText}>Зарегистрироваться</Text>
       </TouchableOpacity>
     </View>
