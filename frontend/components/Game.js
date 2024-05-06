@@ -30,6 +30,45 @@ const Game = () => {
     const [seconds, setSeconds] = useState(0);
     const [timerId, setTimerId] = useState(null);
 
+    function generateDivisionPair() {
+        let divisor = Math.floor(Math.random() * 100) + 1; // Генерируем случайное число от 1 до 10
+
+        // Функция для проверки, является ли число простым
+        function isPrime(num) {
+            if (num < 2) return false; // Числа меньше 2 не являются простыми
+            for (let i = 2, sqrt = Math.sqrt(num); i <= sqrt; i++)
+                if (num % i === 0) return true; // Если число делится на любое число от 2 до sqrt(num), оно простое
+            return false;
+        }
+
+        // Создаем пустой массив для хранения простых чисел
+        let primes = [];
+
+        // Проходим через все числа от 1 до 100
+        for (let i = 1; i <= 100; i++) {
+            // Если число является простым, добавляем его в массив
+            if (isPrime(i)) {
+                primes.push(i);
+            }
+        }
+
+        // Генерируем случайный индекс в пределах длины массива primes
+        let randomIndex = Math.floor(Math.random() * primes.length);
+
+        // Получаем случайное простое число из массива primes
+        let dividend = primes[randomIndex];
+
+        console.log(`Выбранное простое число: ${dividend}`);
+
+
+        // Проверяем, делится ли делимое на делитель без остатка
+        while (dividend % divisor !== 0) {
+            divisor = Math.floor(Math.random() * 10) + 1; // Если нет, генерируем новый делитель
+        }
+
+        return { dividend, divisor }; // Возвращаем пару чисел
+    }
+
     const [color, setColor] = useState('#F7AA2E');
 
     const [coins, setCoins] = useState(100); // Пример количества монет
@@ -43,7 +82,7 @@ const Game = () => {
     };
 
     useEffect(() => {
-        setSchoolClass('1');
+        setSchoolClass('4');
         createExample();
         setSeconds(0);
         const id = setInterval(() => {
@@ -51,33 +90,92 @@ const Game = () => {
         }, 1000);
         setTimerId(id); // Сохраняем ID интервала в состоянии
         return () => clearInterval(id);
-    
+
+
+
     }, [schoolClass, counter]);
 
     const createExample = () => {
         switch (schoolClass) {
             case '1':
-                const firstNumber = Math.floor(Math.random() * 11);
-                setNum1(firstNumber);
-                const secondNumber = Math.floor(Math.random() * (firstNumber + 1));
-                setNum2(secondNumber);
-                const operators = ['+', '-'];
-                const randomIndex = Math.floor(Math.random() * operators.length);
-                setSign(operators[randomIndex]);
-                if (operators[randomIndex] === '+') {
-                    setSolution((firstNumber + secondNumber).toString());
-                } else if (operators[randomIndex] === '-') {
-                    setSolution((firstNumber - secondNumber).toString());
+                const firstNumber1 = Math.floor(Math.random() * 11);
+                setNum1(firstNumber1);
+                const secondNumber1 = Math.floor(Math.random() * (firstNumber1 + 1));
+                setNum2(secondNumber1);
+                const operators1 = ['+', '-'];
+                const randomIndex1 = Math.floor(Math.random() * operators1.length);
+                setSign(operators1[randomIndex1]);
+                if (operators1[randomIndex1] === '+') {
+                    setSolution((firstNumber1 + secondNumber1).toString());
+                } else if (operators1[randomIndex1] === '-') {
+                    setSolution((firstNumber1 - secondNumber1).toString());
                 }
                 break;
             case '2':
-
+                const firstNumber2 = Math.floor(Math.random() * 101);
+                setNum1(firstNumber2);
+                const secondNumber2 = Math.floor(Math.random() * (firstNumber2 + 1));
+                setNum2(secondNumber2);
+                const operators2 = ['+', '-'];
+                const randomIndex2 = Math.floor(Math.random() * operators2.length);
+                setSign(operators2[randomIndex2]);
+                if (operators2[randomIndex2] === '+') {
+                    setSolution((firstNumber2 + secondNumber2).toString());
+                } else if (operators2[randomIndex2] === '-') {
+                    setSolution((firstNumber2 - secondNumber2).toString());
+                }
                 break;
             case '3':
-
+                const operators3 = ['+', '-', '×', '/'];
+                const randomIndex3 = Math.floor(Math.random() * operators3.length);
+                setSign(operators3[randomIndex3])
+                if (operators3[randomIndex3] === '+' || operators3[randomIndex3] === '-') {
+                    const firstNumber3 = Math.floor(Math.random() * 101);
+                    setNum1(firstNumber3);
+                    const secondNumber3 = Math.floor(Math.random() * (firstNumber3 + 1));
+                    setNum2(secondNumber3);
+                    if (operators3[randomIndex3] === '+') setSolution((firstNumber3 + secondNumber3).toString());
+                    if (operators3[randomIndex3] === '-') setSolution((firstNumber3 - secondNumber3).toString());
+                } else if (operators3[randomIndex3] === '×') {
+                    const firstNumber3 = Math.floor(Math.random() * 11);
+                    setNum1(firstNumber3);
+                    const secondNumber3 = Math.floor(Math.random() * 11);
+                    setNum2(secondNumber3);
+                    setSolution((firstNumber3 * secondNumber3).toString());
+                } else if (operators3[randomIndex3] === '/') {
+                    const divisionPair = generateDivisionPair();
+                    const firstNumber3 = divisionPair.dividend;
+                    setNum1(firstNumber3);
+                    const secondNumber3 = divisionPair.divisor;
+                    setNum2(secondNumber3);
+                    setSolution((firstNumber3 / secondNumber3).toString())
+                }
                 break;
             case '4':
-
+                const operators4 = ['+', '-', '×', '/'];
+                const randomIndex4 = Math.floor(Math.random() * operators4.length);
+                setSign(operators4[randomIndex4])
+                if (operators4[randomIndex4] === '+' || operators4[randomIndex4] === '-') {
+                    const firstNumber4 = Math.floor(Math.random() * 1001);
+                    setNum1(firstNumber4);
+                    const secondNumber4 = Math.floor(Math.random() * (firstNumber4 + 1));
+                    setNum2(secondNumber4);
+                    if (operators4[randomIndex4] === '+') setSolution((firstNumber4 + secondNumber4).toString());
+                    if (operators4[randomIndex4] === '-') setSolution((firstNumber4 - secondNumber4).toString());
+                } else if (operators4[randomIndex4] === '×') {
+                    const firstNumber4 = Math.floor(Math.random() * 21);
+                    setNum1(firstNumber4);
+                    const secondNumber4 = Math.floor(Math.random() * 21);
+                    setNum2(secondNumber4);
+                    setSolution((firstNumber4 * secondNumber4).toString());
+                } else if (operators4[randomIndex4] === '/') {
+                    const divisionPair = generateDivisionPair();
+                    const firstNumber4 = divisionPair.dividend;
+                    setNum1(firstNumber4);
+                    const secondNumber4 = divisionPair.divisor;
+                    setNum2(secondNumber4);
+                    setSolution((firstNumber4 / secondNumber4).toString())
+                }
                 break;
         }
     }
@@ -148,15 +246,15 @@ const Game = () => {
                     <Text style={{ fontSize: 40, fontWeight: '300' }}>{formatTime(seconds)}</Text>
                 </View>
                 <View style={styles.coinsXPContainer}>
-                <View style={styles.coins}>
-                    <Text style={styles.textCX}>{coins}</Text>
+                    <View style={styles.coins}>
+                        <Text style={styles.textCX}>{coins}</Text>
+                    </View>
+                    <Image source={require('../assets/VA_coin.png')} style={styles.iconCoin} />
+                    <View style={styles.xp}>
+                        <Text style={styles.textCX}>{xp}</Text>
+                    </View>
+                    <Image source={require('../assets/xp.png')} style={styles.iconXP} />
                 </View>
-                <Image source={require('../assets/VA_coin.png')} style={styles.iconCoin} />
-                <View style={styles.xp}>
-                    <Text style={styles.textCX}>{xp}</Text>
-                </View>
-                <Image source={require('../assets/xp.png')} style={styles.iconXP} />
-            </View>
             </View>
             <View style={styles.viewExample}>
                 <Text style={{ color: "#F7AA2E", fontSize: 100, fontWeight: '700' }}>
@@ -165,9 +263,9 @@ const Game = () => {
                     <Text>{num2} </Text>
                     <Text>= </Text>
                     {enteredNumber ? (
-                        <Text style={{ textDecorationLine: 'underline', color: color}}>{enteredNumber}</Text>
+                        <Text style={{ textDecorationLine: 'underline', color: color }}>{enteredNumber}</Text>
                     ) : (
-                        <Text style={{color: color}}>__</Text>
+                        <Text style={{ color: color }}>__</Text>
                     )}
 
                 </Text>
