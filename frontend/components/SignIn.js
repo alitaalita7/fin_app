@@ -1,27 +1,66 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import UserContext from './UserContext';
 
-const SignIn = () => {
+const SignIn = (props) => {
 
-    const navigation = useNavigation(); // Используем хук useNavigation для доступа к навигации
-  
-    const goToSignUp = () => {
-      navigation.navigate('SignUp'); // Переход на страницу SignUp
-    };
+  const { user, setUser } = useContext(UserContext);
+  const navigation = useNavigation(); // Используем хук useNavigation для доступа к навигации
+
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleLoginChange = (login) => setLogin(login);
+  const handlePasswordChange = (password) => setPassword(password);
+
+  const handleLogIn = () => {
+    const user = {login, password};
+    fetch('http://10.0.2.2:5000/api/user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(user)
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        }).then(data => {
+          console.log('Response:', data.user);
+          setUser(data.user)
+          props.navigation.navigate('Main')
+        }).catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+  }
+
+  const goToSignUp = () => {
+    navigation.navigate('SignUp'); // Переход на страницу SignUp
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Авторизация</Text>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Логин</Text>
-        <TextInput style={styles.input}/>
+        <TextInput
+          style={styles.input}
+          onChangeText={handleLoginChange}
+          value={login}
+        />
       </View>
       <View style={styles.inputContainer}>
         <Text style={styles.label}>Пароль</Text>
-        <TextInput style={styles.input} secureTextEntry={true} />
+        <TextInput
+          style={styles.input}
+          onChangeText={handlePasswordChange}
+          value={password}
+          secureTextEntry={true}
+        />
       </View>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleLogIn}>
         <Text style={styles.buttonText}>Войти</Text>
       </TouchableOpacity>
       <TouchableOpacity onPress={goToSignUp}>

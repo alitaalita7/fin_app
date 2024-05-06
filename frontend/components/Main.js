@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
+import UserContext from './UserContext';
 
 const Main = () => {
+
+    const {user, setUser} = useContext(UserContext);
     const [selectedGoalId, setSelectedGoalId] = useState(null);
-    const [coins, setCoins] = useState(100); // Пример количества монет
+    const [coins, setCoins] = useState(user.coins); // Пример количества монет
     const [xp, setXP] = useState(500); // Пример опыта
 
     const goals = [
