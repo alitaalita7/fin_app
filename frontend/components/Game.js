@@ -32,6 +32,10 @@ const Game = () => {
 
     const [color, setColor] = useState('#F7AA2E');
 
+    const [coins, setCoins] = useState(100); // Пример количества монет
+    const [xp, setXP] = useState(500); // Пример опыта
+
+
     const formatTime = (time) => {
         const minutes = Math.floor(time / 60);
         const seconds = time % 60;
@@ -143,16 +147,16 @@ const Game = () => {
                     <Image source={Timer} style={{ width: 60, height: 60 }}></Image>
                     <Text style={{ fontSize: 40, fontWeight: '300' }}>{formatTime(seconds)}</Text>
                 </View>
-                <View style={styles.viewXpVa}>
-                    <View style={styles.XpVa}>
-                        <Image source={VA} style={styles.imageVa}></Image>
-                        <Text style={{ marginLeft: 35 }}>568</Text>
-                    </View>
-                    <View style={styles.XpVa}>
-                        <Image source={XP} style={styles.imageXp}></Image>
-                        <Text style={{ marginLeft: 35 }}>172</Text>
-                    </View>
+                <View style={styles.coinsXPContainer}>
+                <View style={styles.coins}>
+                    <Text style={styles.textCX}>{coins}</Text>
                 </View>
+                <Image source={require('../assets/VA_coin.png')} style={styles.iconCoin} />
+                <View style={styles.xp}>
+                    <Text style={styles.textCX}>{xp}</Text>
+                </View>
+                <Image source={require('../assets/xp.png')} style={styles.iconXP} />
+            </View>
             </View>
             <View style={styles.viewExample}>
                 <Text style={{ color: "#F7AA2E", fontSize: 100, fontWeight: '700' }}>
@@ -226,31 +230,43 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginTop: 10
     },
-    viewXpVa: {
+    coinsXPContainer: {
+        position: 'absolute',
+        top: 20,
+        right: 40,
         flexDirection: 'row',
-        width: '80%',
-        justifyContent: "flex-end",
-        marginTop: 30
+        gap: 70,
     },
-    Va: {
-        flexDirection: 'row'
-    },
-    XpVa: {
+    coins: {
         flexDirection: 'row',
-        alignItems: 'center',
-        borderWidth: 1,
-        height: 40,
-        width: '20%',
-        marginLeft: 20,
+        borderWidth: .5,
+        borderColor: 'black',
+        width: 130,
+        justifyContent: 'center'
     },
-    imageVa: {
-        width: 33,
-        height: 33,
-        marginLeft: 5
+    xp: {
+        flexDirection: 'row',
+        borderWidth: .5,
+        borderColor: 'black',
+        width: 130,
+        justifyContent: 'center'
     },
-    imageXp: {
-        width: 38,
-        height: 38,
+    iconCoin: {
+        position: 'absolute',
+        top: -10,
+        right: 310,
+        width: 46,
+        height: 47,
+    },
+    iconXP: {
+        position: 'absolute',
+        top: -14,
+        right: 103,
+        width: 51,
+        height: 51,
+    },
+    textCX: {
+        fontSize: 18,
     },
     viewExample: {
         width: '100%',

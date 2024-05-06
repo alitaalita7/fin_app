@@ -81,13 +81,13 @@ const Main = () => {
             {/* Правый верхний угол: количество монет и XP */}
             <View style={styles.coinsXPContainer}>
                 <View style={styles.coins}>
-                    <Image source={require('../assets/VA_coin.png')} style={styles.icon} />
                     <Text style={styles.textCX}>{coins}</Text>
                 </View>
+                <Image source={require('../assets/VA_coin.png')} style={styles.iconCoin} />
                 <View style={styles.xp}>
-                    <Image source={require('../assets/xp.png')} style={styles.icon} />
                     <Text style={styles.textCX}>{xp}</Text>
                 </View>
+                <Image source={require('../assets/xp.png')} style={styles.iconXP} />
             </View>
             <TouchableOpacity onPress={handleAchievements} style={styles.achievementsButton}>
                 <Image source={require('../assets/achievement_button.png')} style={styles.achievements} />
@@ -142,42 +142,48 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 10
     },
-    coinsXPAchivContainer: {
-        position: 'absolute',
-        top: 20,
-        right: 10,
-        flexDirection: 'column',
-    },
     coinsXPContainer: {
         position: 'absolute',
         top: 20,
         right: 40,
         flexDirection: 'row',
-        gap:100,
+        gap: 70,
     },
     coins: {
         flexDirection: 'row',
-        borderWidth: 1,
+        borderWidth: .5,
         borderColor: 'black',
+        width: 130,
+        justifyContent: 'center'
     },
     xp: {
         flexDirection: 'row',
-        borderWidth: 1,
+        borderWidth: .5,
         borderColor: 'black',
-        width: 100,
+        width: 130,
+        justifyContent: 'center'
     },
-    icon: {
-        width: 20,
-        height: 20,
-        marginRight: 5,
+    iconCoin: {
+        position: 'absolute',
+        top: -10,
+        right: 310,
+        width: 46,
+        height: 47,
+    },
+    iconXP: {
+        position: 'absolute',
+        top: -14,
+        right: 103,
+        width: 51,
+        height: 51,
     },
     textCX: {
-        fontSize:18
+        fontSize: 18,
     },
     achievementsButton: {
         position: 'absolute',
         top: 50,
-        right:5,
+        right: 5,
     },
     achievements: {
         marginTop: 20,
@@ -186,7 +192,7 @@ const styles = StyleSheet.create({
     },
     settingsButton: {
         position: 'absolute',
-        right:10,
+        right: 10,
         bottom: 10,
     },
     settingIcon: {
