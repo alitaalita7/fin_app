@@ -22,7 +22,8 @@ router.put('/update-image', UserController.updateImage);
 router.put('/change-password', UserController.changePassword);
 
 // POST запрос для добавления завершенной цели
-router.post('/addCompletedGoal', UserController.addCompletedGoal);
+router.post('/add-completed-goal', UserController.addCompletedGoal);
+router.post('/set-selected-goal', UserController.setSelectedGoal);
 
 // Маршрут для получения информации о пользователе по его ID
 router.get('/:userId', UserController.getUserById);

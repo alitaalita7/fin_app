@@ -195,29 +195,45 @@ class UserController {
   }
 
   async addCompletedGoal(req, res) {
-    const { userId, goalId } = req.body;
-    console.log(userId, goalId);
+    const { user_id, goal_id } = req.body;
+    console.log(user_id, goal_id);
 
     try {
       // Находим пользователя в базе данных
-      const user = await User.findById(userId);
+      const user = await User.findById(user_id);
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
       // Проверяем, есть ли goalId уже в списке завершенных целей пользователя
-      if (user.completed_goals.includes(goalId)) {
+      if (user.completed_goals.includes(goal_id)) {
         return res.status(400).json({ message: "Goal already completed" });
       }
 
       // Добавляем goalId в список завершенных целей пользователя
-      user.completed_goals.push(goalId);
+      user.completed_goals.push(goal_id);
 
       // Сохраняем обновленного пользователя в базе данных
       await user.save();
 
       res.status(200).json({ message: "Completed goal added successfully", user });
+    } catch (error) {
+      console.error("Error adding completed goal:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
+  async setSelectedGoal(req, res){
+    const {user_id, goal_id} = req.body;
+    console.log(req.body);
+    try{
+      const user = await User.findByPk(user_id);
+      if(!user) return res.status(404).json({ message: "User not found" });
+      if(user.selected_goal) return res.status(400).json({ message: "Goal already selected" });
+      user.selected_goal = goal_id;
+      await user.save();
+      res.status(200).json({ message: "Selected goal id added successfully", user });
     } catch (error) {
       console.error("Error adding completed goal:", error);
       res.status(500).json({ message: "Internal server error" });
