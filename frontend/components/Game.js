@@ -13,8 +13,6 @@ import Number_8 from '../assets/game/number_8.png'
 import Number_9 from '../assets/game/number_9.png'
 import Remove from '../assets/game/remove.png'
 import Timer from '../assets/game/timer.png'
-import VA from '../assets/game/VA_coin.png'
-import XP from '../assets/game/xp.png'
 
 const Game = () => {
 

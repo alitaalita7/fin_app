@@ -1,14 +1,35 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native';
+import React, { useContext, useState} from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
 import UserContext from './UserContext';
 
 const Goals = () => {
 
     const {user, setUser} = useContext(UserContext);
-
     const [selectedGoalId, setSelectedGoalId] = useState(user.selected_goal);
     const [progress, setProgress] = useState(user.coins);
     const [completedGoals, setCompletedGoals] = useState(user.completed_goals);
+
+    const handleSetSelectedGoalId = (id) => {
+        const userData = {user_id: user.id, goal_id: id}
+        fetch('http://10.0.2.2:5000/api/user/set-selected-goal', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        }).then(response => {
+          return response.json();
+        }).then(data => {
+          console.log('Response:', data.user);
+          if(data.message == "Goal already selected") alert(data.message)
+          else {
+            setSelectedGoalId(data.user.selected_goal);
+            setUser({...user, selected_goal: data.user.selected_goal}) // Перезаписываем user'а
+          }
+        }).catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
 
     const goals = [
         {
@@ -46,7 +67,7 @@ const Goals = () => {
             
             setCompletedGoals(prevCompletedGoals => [...prevCompletedGoals, goal.id]);
 
-            setSelectedGoalId(null)
+            
         };
 
         if (completedGoals.includes(goal.id)) {
@@ -62,9 +83,9 @@ const Goals = () => {
                 return <Text style={styles.selectedGoalText}>Цель выбрана</Text>;
             }
         } else if (selectedGoalId) {
-            return <TouchableOpacity style={styles.disabledButton}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
+            return <TouchableOpacity style={styles.disabledButton} onPress={() => handleSetSelectedGoalId(goal.id)}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
         } else {
-            return <TouchableOpacity style={styles.button} onPress={() => setSelectedGoalId(goal.id)}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
+            return <TouchableOpacity style={styles.button} onPress={() => handleSetSelectedGoalId(goal.id)}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
         }
     };
 

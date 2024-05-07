@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native';
 import UserContext from './UserContext';
 import { useNavigation } from '@react-navigation/native';
@@ -6,9 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 const Main = () => {
 
     const {user, setUser} = useContext(UserContext);
-    const [selectedGoalId, setSelectedGoalId] = useState(user.selected_goal);
+    const [selectedGoalId, setSelectedGoalId] = useState(null);
     const [coins, setCoins] = useState(user.coins); // Пример количества монет
     const [xp, setXP] = useState(user.xp); // Пример опыта\
+
+    useEffect(() => {
+        setSelectedGoalId(user.selected_goal)
+    }, [user])
 
     const navigation = useNavigation();
 
