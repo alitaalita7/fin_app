@@ -1,4 +1,4 @@
-import React, { useContext, useState} from 'react';
+import React, { useContext, useEffect, useState} from 'react';
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
 import UserContext from './UserContext';
 
@@ -8,6 +8,11 @@ const Goals = () => {
     const [selectedGoalId, setSelectedGoalId] = useState(user.selected_goal);
     const [progress, setProgress] = useState(user.coins);
     const [completedGoals, setCompletedGoals] = useState(user.completed_goals);
+
+    useEffect(() => {
+        setCompletedGoals(user.completed_goals)
+        setSelectedGoalId(user.selected_goal)
+    }, [user])
 
     const handleSetSelectedGoalId = (id) => {
         const userData = {user_id: user.id, goal_id: id}
@@ -25,6 +30,29 @@ const Goals = () => {
           else {
             setSelectedGoalId(data.user.selected_goal);
             setUser({...user, selected_goal: data.user.selected_goal}) // Перезаписываем user'а
+          }
+        }).catch(error => {
+          console.error('There was a problem with the fetch operation:', error);
+        });
+    }
+
+    const handleAddCompletedGoal = (id) => {
+        const userData = {user_id: user.id, goal_id: id}
+        fetch('http://10.0.2.2:5000/api/user/add-completed-goal', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        }).then(response => {
+          return response.json();
+        }).then(data => {
+          console.log('Response:', data.user);
+          if(data.message == "Goal already completed") alert(data.message)
+          else {
+            setCompletedGoals(prevCompletedGoals => [...prevCompletedGoals, id]);
+            setSelectedGoalId(null);
+            setUser({...user, completed_goals: data.user.completed_goals, selected_goal: null}); // Перезаписываем user'а
           }
         }).catch(error => {
           console.error('There was a problem with the fetch operation:', error);
@@ -63,19 +91,12 @@ const Goals = () => {
     const renderGoalButton = (goal) => {
         const costValue = parseFloat(goal.cost.split(' ')[0]);
 
-        const handleBuyButtonPress = () => {
-            
-            setCompletedGoals(prevCompletedGoals => [...prevCompletedGoals, goal.id]);
-
-            
-        };
-
         if (completedGoals.includes(goal.id)) {
             return null;
         } else if (goal.id === selectedGoalId) {
             if (progress >= costValue) {
                 return (
-                    <TouchableOpacity style={styles.button} onPress={handleBuyButtonPress}>
+                    <TouchableOpacity style={styles.button} onPress={() => handleAddCompletedGoal(goal.id)}>
                         <Text style={styles.buttonText}>Купить</Text>
                     </TouchableOpacity>
                 );
