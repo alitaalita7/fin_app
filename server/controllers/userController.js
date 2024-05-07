@@ -223,7 +223,7 @@ class UserController {
       await user.save();
       res.status(200).json({ message: "Selected goal id added successfully", user });
     } catch (error) {
-      console.error("Error adding completed goal:", error);
+      console.error("Error selecting goal:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   }
