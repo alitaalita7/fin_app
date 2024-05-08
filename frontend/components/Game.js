@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Image, Text, View, StyleSheet, TouchableOpacity } from 'react-native'
 import Accept from '../assets/game/accept.png'
 import Number_0 from '../assets/game/number_0.png'
@@ -13,8 +13,11 @@ import Number_8 from '../assets/game/number_8.png'
 import Number_9 from '../assets/game/number_9.png'
 import Remove from '../assets/game/remove.png'
 import Timer from '../assets/game/timer.png'
+import UserContext from './UserContext'
 
 const Game = () => {
+
+    const {user, setUser} = useContext(UserContext)
 
     // Установка изначальных чисел, знака, и решения
     const [num1, setNum1] = useState(null);
@@ -23,10 +26,28 @@ const Game = () => {
     const [solution, setSolution] = useState(null);
 
     const [enteredNumber, setEntederNumber] = useState('')
-    const [schoolClass, setSchoolClass] = useState('');
+    const [schoolClass, setSchoolClass] = useState(user.school_class);
     const [counter, setCounter] = useState(0);
     const [seconds, setSeconds] = useState(0);
     const [timerId, setTimerId] = useState(null);
+
+    const handleAcceptAnswer = (seconds, is_correct) => {
+        const userData = {seconds, is_correct, user_id: user.id};
+        fetch('http://10.0.2.2:5000/api/user/accept-user-answer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        }).then(response => {
+            return response.json();
+        }).then(data => {
+            console.log('Response:', data.user);
+            setUser(data.user); // Перезаписываем user'а
+        }).catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    }
 
     function generateDivisionPair() {
         let divisor = Math.floor(Math.random() * 100) + 1; // Генерируем случайное число от 1 до 10
@@ -69,8 +90,8 @@ const Game = () => {
 
     const [color, setColor] = useState('#F7AA2E');
 
-    const [coins, setCoins] = useState(100); // Пример количества монет
-    const [xp, setXP] = useState(500); // Пример опыта
+    const [coins, setCoins] = useState(user.coins); // Пример количества монет
+    const [xp, setXP] = useState(user.xp); // Пример опыта
 
 
     const formatTime = (time) => {
@@ -80,22 +101,21 @@ const Game = () => {
     };
 
     useEffect(() => {
-        setSchoolClass('4');
-        createExample();
+        setSchoolClass(user.school_class);
+        setXP(user.xp)
+        setCoins(user.coins)
+        if(!num1 || !num2 || !solution || !sign) createExample();
         setSeconds(0);
         const id = setInterval(() => {
             setSeconds(prevSeconds => prevSeconds + 1);
         }, 1000);
         setTimerId(id); // Сохраняем ID интервала в состоянии
         return () => clearInterval(id);
-
-
-
-    }, [schoolClass, counter]);
+    }, [user, counter]);
 
     const createExample = () => {
         switch (schoolClass) {
-            case '1':
+            case 1:
                 const firstNumber1 = Math.floor(Math.random() * 11);
                 setNum1(firstNumber1);
                 const secondNumber1 = Math.floor(Math.random() * (firstNumber1 + 1));
@@ -109,7 +129,7 @@ const Game = () => {
                     setSolution((firstNumber1 - secondNumber1).toString());
                 }
                 break;
-            case '2':
+            case 2:
                 const firstNumber2 = Math.floor(Math.random() * 101);
                 setNum1(firstNumber2);
                 const secondNumber2 = Math.floor(Math.random() * (firstNumber2 + 1));
@@ -123,7 +143,7 @@ const Game = () => {
                     setSolution((firstNumber2 - secondNumber2).toString());
                 }
                 break;
-            case '3':
+            case 3:
                 const operators3 = ['+', '-', '×', '/'];
                 const randomIndex3 = Math.floor(Math.random() * operators3.length);
                 setSign(operators3[randomIndex3])
@@ -149,7 +169,7 @@ const Game = () => {
                     setSolution((firstNumber3 / secondNumber3).toString())
                 }
                 break;
-            case '4':
+            case 4:
                 const operators4 = ['+', '-', '×', '/'];
                 const randomIndex4 = Math.floor(Math.random() * operators4.length);
                 setSign(operators4[randomIndex4])
@@ -179,10 +199,12 @@ const Game = () => {
     }
 
     const handlePressAccept = () => {
-        clearInterval(timerId);
+        clearInterval(timerId); // Останавливаем таймер по его ID
         if (solution === enteredNumber) {
-            setColor('green') // Останавливаем таймер по его ID
+            setColor('green')
             setTimeout(() => {
+                createExample();
+                handleAcceptAnswer(seconds, true)
                 setColor('#F7AA2E')
                 setEntederNumber('');
                 setCounter(counter + 1);
@@ -190,6 +212,8 @@ const Game = () => {
         } else {
             setColor('red');
             setTimeout(() => {
+                createExample();
+                handleAcceptAnswer(seconds, false)
                 setColor('#F7AA2E')
                 setEntederNumber('');
                 setCounter(counter + 1);
