@@ -229,5 +229,24 @@ class UserController {
       res.status(500).json({ message: "Internal server error" });
     }
   }
+
+  async addCompletedAchievement(req, res) {
+    const {user_id, achievement_id, cost} = req.body;
+    try{
+      const user = await User.findByPk(user_id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      if (user.completed_achievements.includes(achievement_id)) return res.status(400).json({ message: "Achievement already completed" });
+      user.completed_achievements.push(achievement_id);
+      user.xp = user.xp - cost;
+      user.changed('completed_achievements', true);
+      user.changed('xp', true);
+      await user.save();
+      res.status(200).json({ message: "Completed achievement added successfully", user });
+    } catch (error) {
+      console.error("Error adding completed achievement:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
 }
 module.exports = new UserController();
