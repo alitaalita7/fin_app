@@ -18,9 +18,9 @@ const Achievements = () => {
         setCompletedAchievements(user.completed_achievements);
     }, [user])
 
-    const handleAddCompletedAchievement = (achievement_id, cost) => {
+    const handleAddCompletedAchievement = (achievement_id, cost, coins) => {
         // setCompletedAchievements([...completedAchievements, achievement_id]);
-        const userData = {achievement_id, cost, user_id: user.id};
+        const userData = {achievement_id, cost, user_id: user.id, coins};
         fetch('http://10.0.2.2:5000/api/user/add-completed-achievement', {
             method: 'POST',
             headers: {
@@ -65,7 +65,7 @@ const Achievements = () => {
                 ) : (
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: xp < 30 ? '#FFD155' : '#F7AA2E' }]}
-                        onPress={() => { xp >= 30? handleAddCompletedAchievement(1, 30) : alert('не хватает xp')}}
+                        onPress={() => { xp >= 30? handleAddCompletedAchievement(1, 30, 100) : alert('не хватает xp')}}
                     >
                         <Text style={styles.buttonText}>+100 VA</Text>
                     </TouchableOpacity>
@@ -94,7 +94,7 @@ const Achievements = () => {
                 ) : (
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: xp < 60 ? '#FFD155' : '#F7AA2E' }]}
-                        onPress={() => { xp >= 60? handleAddCompletedAchievement(2, 60) : alert('не хватает xp')}}
+                        onPress={() => { xp >= 60? handleAddCompletedAchievement(2, 60, 200) : alert('не хватает xp')}}
                     >
                         <Text style={styles.buttonText}>+200 VA</Text>
                     </TouchableOpacity>
@@ -123,7 +123,7 @@ const Achievements = () => {
                 ) : (
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: xp < 100 ? '#FFD155' : '#F7AA2E' }]}
-                        onPress={() => { xp >= 100? handleAddCompletedAchievement(3, 100) : alert('не хватает xp')}}
+                        onPress={() => { xp >= 100? handleAddCompletedAchievement(3, 100, 350) : alert('не хватает xp')}}
                     >
                         <Text style={styles.buttonText}>+350 VA</Text>
                     </TouchableOpacity>
@@ -152,7 +152,7 @@ const Achievements = () => {
                 ) : (
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: xp < 200 ? '#FFD155' : '#F7AA2E' }]}
-                        onPress={() => { xp >= 200? handleAddCompletedAchievement(4, 200) : alert('не хватает xp')}}
+                        onPress={() => { xp >= 200? handleAddCompletedAchievement(4, 200, 700) : alert('не хватает xp')}}
                     >
                         <Text style={styles.buttonText}>+700 VA</Text>
                     </TouchableOpacity>
@@ -181,7 +181,7 @@ const Achievements = () => {
                 ) : (
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: xp < 500 ? '#FFD155' : '#F7AA2E' }]}
-                        onPress={() => { xp >= 500? handleAddCompletedAchievement(5, 500) : alert('не хватает xp')}}
+                        onPress={() => { xp >= 500? handleAddCompletedAchievement(5, 500, 1500) : alert('не хватает xp')}}
                     >
                         <Text style={styles.buttonText}>+1500 VA</Text>
                     </TouchableOpacity>

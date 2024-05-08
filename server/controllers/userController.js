@@ -231,15 +231,17 @@ class UserController {
   }
 
   async addCompletedAchievement(req, res) {
-    const {user_id, achievement_id, cost} = req.body;
+    const {user_id, achievement_id, cost, coins} = req.body;
     try{
       const user = await User.findByPk(user_id);
       if (!user) return res.status(404).json({ message: "User not found" });
       if (user.completed_achievements.includes(achievement_id)) return res.status(400).json({ message: "Achievement already completed" });
       user.completed_achievements.push(achievement_id);
       user.xp = user.xp - cost;
+      user.coins = user.coins + coins;
       user.changed('completed_achievements', true);
       user.changed('xp', true);
+      user.changed('coins', true);
       await user.save();
       res.status(200).json({ message: "Completed achievement added successfully", user });
     } catch (error) {
