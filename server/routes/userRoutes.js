@@ -25,6 +25,7 @@ router.put('/change-password', UserController.changePassword);
 router.post('/add-completed-goal', UserController.addCompletedGoal);
 router.post('/set-selected-goal', UserController.setSelectedGoal);
 router.post('/add-completed-achievement', UserController.addCompletedAchievement);
+router.post('/accept-user-answer', UserController.acceptUserAnswer);
 
 // Маршрут для получения информации о пользователе по его ID
 router.get('/:userId', UserController.getUserById);

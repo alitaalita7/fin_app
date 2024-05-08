@@ -248,5 +248,46 @@ class UserController {
     }
   }
 
+  async acceptUserAnswer(req, res){
+    const {user_id, is_correct, seconds} = req.body;
+    try{
+      const user = await User.findByPk(user_id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+
+      // Если ответ правильный, то прибавляем 5 коинов, иначе отнимаем
+      if(is_correct){
+        user.coins = user.coins + 5;
+
+        // В зависимости от класса разное количество секунд на решение примера для получения xp
+        switch (user.school_class) {
+          case 1:
+            if(seconds <= 3) user.xp = user.xp + 2;
+            else user.xp = user.xp + 0;
+            break;
+          case 2:
+            if(seconds <= 10) user.xp = user.xp + 2;
+            else user.xp = user.xp + 0;
+            break;
+          case 3:
+            if(seconds <= 10) user.xp = user.xp + 2;
+            else user.xp = user.xp + 0;
+            break;
+          case 4:
+            if(seconds <= 20) user.xp = user.xp + 2;
+            else user.xp = user.xp + 0;
+            break;
+        }
+      } else user.coins = user.coins - 5;
+
+      user.changed('coins', true);
+      user.changed('xp', true);
+      await user.save();
+      res.status(200).json({ message: "Completed achievement added successfully", user });
+    } catch (error) {
+      console.error("Error accept user answer:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  }
+
 }
 module.exports = new UserController();
