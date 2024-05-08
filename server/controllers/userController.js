@@ -195,16 +195,18 @@ class UserController {
   }
 
   async addCompletedGoal(req, res) {
-    const { user_id, goal_id } = req.body;
+    const { user_id, goal_id, cost } = req.body;
     try {
       const user = await User.findByPk(user_id);
       if (!user) return res.status(404).json({ message: "User not found" });
       if (user.completed_goals.includes(goal_id)) return res.status(400).json({ message: "Goal already completed" });
       user.completed_goals.push(goal_id);
       user.selected_goal = null;
+      user.coins = user.coins - cost;
       // Явное указание, что поле изменено
       user.changed('completed_goals', true);
       user.changed('selected_goal', true);
+      user.changed('coins', true)
       await user.save();
       res.status(200).json({ message: "Completed goal added successfully", user });
     } catch (error) {
