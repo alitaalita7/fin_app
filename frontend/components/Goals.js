@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState} from 'react';
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet} from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native';
 import UserContext from './UserContext';
 
 const Goals = () => {
 
-    const {user, setUser} = useContext(UserContext);
+    const { user, setUser } = useContext(UserContext);
     const [selectedGoalId, setSelectedGoalId] = useState(user.selected_goal);
     const [progress, setProgress] = useState(user.coins);
     const [completedGoals, setCompletedGoals] = useState(user.completed_goals);
@@ -12,50 +12,57 @@ const Goals = () => {
     useEffect(() => {
         setCompletedGoals(user.completed_goals)
         setSelectedGoalId(user.selected_goal)
+        setProgress(user.coins)
     }, [user])
 
+    // Функция для извлечения числовой части из строки
+    function extractNumberFromString(str) {
+        // Регулярное выражение для поиска всех цифр, которые следуют за пробелом или в начале строки
+        const regex = /^\d+|\s\d+/;
+        const match = str.match(regex);
+        return match ? parseInt(match[0], 10) : null; // Возвращаем число, если найдено совпадение, иначе null
+    }
+
     const handleSetSelectedGoalId = (id) => {
-        const userData = {user_id: user.id, goal_id: id}
+        const userData = { user_id: user.id, goal_id: id }
         fetch('http://10.0.2.2:5000/api/user/set-selected-goal', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(userData)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
         }).then(response => {
-          return response.json();
+            return response.json();
         }).then(data => {
-          console.log('Response:', data.user);
-          if(data.message == "Goal already selected") alert(data.message)
-          else {
-            setSelectedGoalId(data.user.selected_goal);
-            setUser({...user, selected_goal: data.user.selected_goal}) // Перезаписываем user'а
-          }
+            console.log('Response:', data.user);
+            if (data.message == "Goal already selected") alert(data.message)
+            else {
+                setUser({ ...user, selected_goal: data.user.selected_goal }) // Перезаписываем user'а
+            }
         }).catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
+            console.error('There was a problem with the fetch operation:', error);
         });
     }
 
     const handleAddCompletedGoal = (id) => {
-        const userData = {user_id: user.id, goal_id: id}
+        const cost = extractNumberFromString(goals.find(goal => goal.id === id).cost); // Извлечение стоимость цели из массива goals по id
+        const userData = { user_id: user.id, goal_id: id, cost }
         fetch('http://10.0.2.2:5000/api/user/add-completed-goal', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(userData)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
         }).then(response => {
-          return response.json();
+            return response.json();
         }).then(data => {
-          console.log('Response:', data.user);
-          if(data.message == "Goal already completed") alert(data.message)
-          else {
-            setCompletedGoals(prevCompletedGoals => [...prevCompletedGoals, id]);
-            setSelectedGoalId(null);
-            setUser({...user, completed_goals: data.user.completed_goals, selected_goal: null}); // Перезаписываем user'а
-          }
+            console.log('Response:', data.user);
+            if (data.message == "Goal already completed") alert(data.message)
+            else {
+                setUser({ ...user, completed_goals: data.user.completed_goals, selected_goal: null, coins: data.user.coins }); // Перезаписываем user'а
+            }
         }).catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
+            console.error('There was a problem with the fetch operation:', error);
         });
     }
 
@@ -100,7 +107,7 @@ const Goals = () => {
                         <Text style={styles.buttonText}>Купить</Text>
                     </TouchableOpacity>
                 );
-            }else {
+            } else {
                 return <Text style={styles.selectedGoalText}>Цель выбрана</Text>;
             }
         } else if (selectedGoalId) {

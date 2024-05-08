@@ -6,11 +6,13 @@ import { useNavigation } from '@react-navigation/native';
 const Main = () => {
 
     const {user, setUser} = useContext(UserContext);
-    const [selectedGoalId, setSelectedGoalId] = useState(null);
+    const [selectedGoalId, setSelectedGoalId] = useState(user.selected_goal);
     const [coins, setCoins] = useState(user.coins); // Пример количества монет
     const [xp, setXP] = useState(user.xp); // Пример опыта\
 
     useEffect(() => {
+        setCoins(user.coins);
+        setXP(user.xp)
         setSelectedGoalId(user.selected_goal)
     }, [user])
 
