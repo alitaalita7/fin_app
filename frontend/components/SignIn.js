@@ -24,7 +24,8 @@ const SignIn = (props) => {
           body: JSON.stringify(user)
         }).then(response => {
           if (!response.ok) {
-            throw new Error('Network response was not ok');
+            alert('неправильный логин или пароль');
+            return;
           }
           return response.json();
         }).then(data => {
@@ -32,7 +33,7 @@ const SignIn = (props) => {
           setUser(data.user)
           props.navigation.navigate('Main')
         }).catch(error => {
-          console.error('There was a problem with the fetch operation:', error);
+          
         });
   }
 

@@ -67,30 +67,21 @@ class UserController {
 
   // Контроллер для обновления данных пользователя
   async updateUserData(req, res, next) {
+    const { user_id, login, password, school_class } = req.body;
     try {
-      const userId = req.body.id; // Получаем идентификатор пользователя из запроса (предполагается, что пользователь уже аутентифицирован)
-      const updatedData = req.body; // Получаем обновленные данные пользователя из тела запроса
-
-      console.log('Получен запрос на обновление данных пользователя:', updatedData);
-
-      // Поиск пользователя по идентификатору
-      const user = await User.findByPk(userId);
-
-      // Проверка, существует ли пользователь с указанным идентификатором
-      if (!user) {
-        return res.status(404).json({ error: 'Пользователь не найден' });
-      }
-
-      // Обновление данных пользователя
-      await user.update(updatedData);
-
-      console.log('Данные пользователя успешно обновлены:', user);
-
-      // Отправляем ответ с сообщением об успешном обновлении данных
-      return res.json({ message: 'Данные пользователя успешно обновлены', user });
+      const user = await User.findByPk(user_id);
+      if (!user) return res.status(404).json({ message: "User not found" });
+      user.login = login;
+      user.password = password;
+      user.school_class = school_class;
+      user.changed('login', true);
+      user.changed('password', true);
+      user.changed('school_class', true);
+      await user.save();
+      res.status(200).json({ message: "User's login, password and school class changed successfully", user });
     } catch (error) {
-      console.error('Ошибка при обновлении данных пользователя:', error.message);
-      next(error);
+      console.error("Error changing user's login, password or school class:", error);
+      res.status(500).json({ message: "Internal server error" });
     }
   }
 

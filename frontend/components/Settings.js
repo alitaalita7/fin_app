@@ -1,13 +1,46 @@
-import { useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { Picker } from '@react-native-picker/picker';
+import UserContext from './UserContext'
 
 const Settings = () => {
-    const [selectedClass, setSelectedClass] = useState('1');
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
+
+    const { user, setUser } = useContext(UserContext);
+    const [selectedClass, setSelectedClass] = useState(user.school_class);
+    const [login, setLogin] = useState(user.login);
+    const [password, setPassword] = useState(user.password);
+
+    const handelSaveUserData = () => {
+        if (login && password && selectedClass) {
+            const userData = { user_id: user.id, school_class: selectedClass, login, password };
+            fetch('http://10.0.2.2:5000/api/user/update-user-data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(userData)
+            }).then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            }).then(data => {
+                console.log('Response:', data.user);
+                alert('Данные успешно сменены')
+                setUser(data.user)
+            }).catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+        } else alert('Логин, пароль или класс не заполнены')
+    }
+
+    useEffect(() => {
+        setSelectedClass(user.school_class);
+        setLogin(user.login);
+        setPassword(user.password)
+    }, [user])
 
     const handleLoginChange = (login) => {
         setLogin(login);
@@ -20,7 +53,7 @@ const Settings = () => {
     return (
         <View style={styles.container}>
             <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.button}>
+                <TouchableOpacity style={styles.button} onPress={handelSaveUserData}>
                     <Text style={styles.textSave}>Сохранить</Text>
                 </TouchableOpacity>
             </View>
@@ -29,19 +62,19 @@ const Settings = () => {
                 <View style={styles.fieldsEnterData}>
                     <View>
                         <Text style={styles.textLogin}>Логин</Text>
-                        <TextInput 
-                            style={styles.input} 
+                        <TextInput
+                            style={styles.input}
                             onChangeText={handleLoginChange} // Связываем с функцией обновления логина
                             value={login} // Устанавливаем значение из стейта
                         />
                     </View>
                     <View>
                         <Text style={styles.textLogin}>Пароль</Text>
-                        <TextInput 
-                            style={styles.input} 
+                        <TextInput
+                            style={styles.input}
                             onChangeText={handlePasswordChange} // Связываем с функцией обновления пароля
                             value={password} // Устанавливаем значение из стейта
-                            secureTextEntry={true} 
+                            secureTextEntry={true}
                         />
                     </View>
                     <View style={styles.selectClass}>
@@ -52,10 +85,10 @@ const Settings = () => {
                                 style={[styles.picker]}
                                 onValueChange={(itemValue, itemIndex) => setSelectedClass(itemValue)}
                             >
-                                <Picker.Item label="1" value="1" />
-                                <Picker.Item label="2" value="2" />
-                                <Picker.Item label="3" value="3" />
-                                <Picker.Item label="4" value="4" />
+                                <Picker.Item label="1" value={1} />
+                                <Picker.Item label="2" value={2} />
+                                <Picker.Item label="3" value={3} />
+                                <Picker.Item label="4" value={4} />
                             </Picker>
                         </View>
                     </View>
