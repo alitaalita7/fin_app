@@ -13,7 +13,7 @@ class UserController {
       // Проверяем, существует ли пользователь с таким логином
       const existingUser = await User.findOne({ where: { login } });
       if (existingUser) {
-        return res.status(400).json({ error: 'Пользователь с таким логином уже существует' });
+        return res.json({ message: 'Пользователь с таким логином уже существует' });
       }
 
       // Создаем нового пользователя в базе данных
@@ -71,6 +71,13 @@ class UserController {
     try {
       const user = await User.findByPk(user_id);
       if (!user) return res.status(404).json({ message: "User not found" });
+
+      // Проверяем, существует ли пользователь с таким логином
+      const existingUser = await User.findOne({ where: { login } });
+      if (existingUser) {
+        return res.json({ message: 'Пользователь с таким логином уже существует' });
+      }
+
       user.login = login;
       user.password = password;
       user.school_class = school_class;
@@ -222,13 +229,13 @@ class UserController {
   }
 
   async addCompletedAchievement(req, res) {
-    const {user_id, achievement_id, cost, coins} = req.body;
-    try{
+    const { user_id, achievement_id, cost, coins } = req.body;
+    try {
       const user = await User.findByPk(user_id);
       if (!user) return res.status(404).json({ message: "User not found" });
       if (user.completed_achievements.includes(achievement_id)) return res.status(400).json({ message: "Achievement already completed" });
       user.completed_achievements.push(achievement_id);
-      user.xp = user.xp - cost;
+      // user.xp = user.xp - cost; отнималась XP
       user.coins = user.coins + coins;
       user.changed('completed_achievements', true);
       user.changed('xp', true);
@@ -241,36 +248,43 @@ class UserController {
     }
   }
 
-  async acceptUserAnswer(req, res){
-    const {user_id, is_correct, seconds} = req.body;
-    try{
+  async acceptUserAnswer(req, res) {
+    const { user_id, is_correct, seconds } = req.body;
+    try {
       const user = await User.findByPk(user_id);
       if (!user) return res.status(404).json({ message: "User not found" });
 
       // Если ответ правильный, то прибавляем 5 коинов, иначе отнимаем
-      if(is_correct){
+      if (is_correct) {
         user.coins = user.coins + 5;
 
         // В зависимости от класса разное количество секунд на решение примера для получения xp
         switch (user.school_class) {
           case 1:
-            if(seconds <= 3) user.xp = user.xp + 2;
+            if (seconds <= 3) user.xp = user.xp + 2;
             else user.xp = user.xp + 0;
             break;
           case 2:
-            if(seconds <= 10) user.xp = user.xp + 2;
+            if (seconds <= 10) user.xp = user.xp + 2;
             else user.xp = user.xp + 0;
             break;
           case 3:
-            if(seconds <= 10) user.xp = user.xp + 2;
+            if (seconds <= 10) user.xp = user.xp + 2;
             else user.xp = user.xp + 0;
             break;
           case 4:
-            if(seconds <= 20) user.xp = user.xp + 2;
+            if (seconds <= 20) user.xp = user.xp + 2;
             else user.xp = user.xp + 0;
             break;
         }
-      } else user.coins = user.coins - 5;
+      } else {
+        // Если у пользователя меньше 5 монет, отнимаем все его монеты
+        if (user.coins < 5) {
+          user.coins = 0;
+        } else {
+          user.coins -= 5;
+        }
+      }
 
       user.changed('coins', true);
       user.changed('xp', true);

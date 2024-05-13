@@ -15,26 +15,30 @@ const SignIn = (props) => {
   const handlePasswordChange = (password) => setPassword(password);
 
   const handleLogIn = () => {
-    const user = {login, password};
+    const user = { login, password };
     fetch('http://10.0.2.2:5000/api/user/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(user)
-        }).then(response => {
-          if (!response.ok) {
-            alert('неправильный логин или пароль');
-            return;
-          }
-          return response.json();
-        }).then(data => {
-          console.log('Response:', data.user);
-          setUser(data.user)
-          props.navigation.navigate('Main')
-        }).catch(error => {
-          
-        });
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(user)
+    }).then(response => {
+      if (!response.ok) {
+        alert('неправильный логин или пароль');
+        return;
+      }
+      return response.json();
+    }).then(data => {
+      console.log('Response:', data.user);
+      setUser(data.user)
+      // После успешной регистрации или входа, перенаправьте пользователя на главную страницу игры и выполните сброс стека навигации
+      props.navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }] // Замените 'Main' на имя вашего главного экрана игры
+      });
+    }).catch(error => {
+
+    });
   }
 
   const goToSignUp = () => {

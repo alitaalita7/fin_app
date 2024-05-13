@@ -199,26 +199,31 @@ const Game = () => {
     }
 
     const handlePressAccept = () => {
-        clearInterval(timerId); // Останавливаем таймер по его ID
-        if (solution === enteredNumber) {
-            setColor('green')
-            setTimeout(() => {
-                createExample();
-                handleAcceptAnswer(seconds, true)
-                setColor('#F7AA2E')
-                setEntederNumber('');
-                setCounter(counter + 1);
-            }, 2000);
+        if(enteredNumber != ''){
+            clearInterval(timerId); // Останавливаем таймер по его ID
+            if (solution === enteredNumber) {
+                setColor('green')
+                setTimeout(() => {
+                    createExample();
+                    handleAcceptAnswer(seconds, true)
+                    setColor('#F7AA2E')
+                    setEntederNumber('');
+                    setCounter(counter + 1);
+                }, 2000);
+            } else {
+                setColor('red');
+                setTimeout(() => {
+                    createExample();
+                    handleAcceptAnswer(seconds, false)
+                    setColor('#F7AA2E')
+                    setEntederNumber('');
+                    setCounter(counter + 1);
+                }, 2000);
+            };
         } else {
-            setColor('red');
-            setTimeout(() => {
-                createExample();
-                handleAcceptAnswer(seconds, false)
-                setColor('#F7AA2E')
-                setEntederNumber('');
-                setCounter(counter + 1);
-            }, 2000);
-        };
+            return;
+        }
+        
     }
 
     const inputNumber = (number) => {

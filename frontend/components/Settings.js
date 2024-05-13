@@ -28,8 +28,12 @@ const Settings = () => {
                 return response.json();
             }).then(data => {
                 console.log('Response:', data.user);
-                alert('Данные успешно сменены')
-                setUser(data.user)
+                if (data.message === 'Пользователь с таким логином уже существует') {
+                    alert('Такой логин уже занят');
+                } else {
+                    alert('Данные успешно сменены')
+                    setUser(data.user)
+                }
             }).catch(error => {
                 console.error('There was a problem with the fetch operation:', error);
             });

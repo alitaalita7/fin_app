@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import UserContext from './UserContext';
 
 const SignUp = (props) => {
+
+  const { user, setUser } = useContext(UserContext);
   const [selectedClass, setSelectedClass] = useState('1');
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
@@ -26,7 +29,16 @@ const SignUp = (props) => {
           return response.json();
         }).then(data => {
           console.log('Response:', data);
-          props.navigation.navigate('Game')
+          if (data.message === 'Пользователь с таким логином уже существует') {
+            alert('Такой логин уже занят');
+          } else {
+            setUser(data.user)
+            // После успешной регистрации или входа, перенаправьте пользователя на главную страницу игры и выполните сброс стека навигации
+            props.navigation.reset({
+              index: 0,
+              routes: [{ name: 'Main' }] // Замените 'Main' на имя вашего главного экрана игры
+            });
+          }
         }).catch(error => {
           console.error('There was a problem with the fetch operation:', error);
         });

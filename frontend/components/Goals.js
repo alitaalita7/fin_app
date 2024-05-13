@@ -35,7 +35,7 @@ const Goals = () => {
             return response.json();
         }).then(data => {
             console.log('Response:', data.user);
-            if (data.message == "Goal already selected") alert(data.message)
+            if (data.message == "Вы уже достигли эту цель, поздравляем!") alert(data.message)
             else {
                 setUser({ ...user, selected_goal: data.user.selected_goal }) // Перезаписываем user'а
             }
@@ -111,7 +111,7 @@ const Goals = () => {
                 return <Text style={styles.selectedGoalText}>Цель выбрана</Text>;
             }
         } else if (selectedGoalId) {
-            return <TouchableOpacity style={styles.disabledButton} onPress={() => handleSetSelectedGoalId(goal.id)}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
+            return <TouchableOpacity style={styles.disabledButton} disabled={true} onPress={() => handleSetSelectedGoalId(goal.id)}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
         } else {
             return <TouchableOpacity style={styles.button} onPress={() => handleSetSelectedGoalId(goal.id)}><Text style={styles.buttonText}>Поставить цель</Text></TouchableOpacity>;
         }

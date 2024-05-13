@@ -94,7 +94,7 @@ const Achievements = () => {
                 ) : (
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: xp < 60 ? '#FFD155' : '#F7AA2E' }]}
-                        onPress={() => { xp >= 60? handleAddCompletedAchievement(2, 60, 200) : alert('не хватает xp')}}
+                        onPress={() => { xp >= 60? handleAddCompletedAchievement(2, 60, 200) : alert('Недостаточно XP для получения награды')}}
                     >
                         <Text style={styles.buttonText}>+200 VA</Text>
                     </TouchableOpacity>
