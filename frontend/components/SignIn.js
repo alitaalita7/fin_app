@@ -2,6 +2,9 @@ import React, { useContext, useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import UserContext from './UserContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CommonActions } from '@react-navigation/native';
+
 
 const SignIn = (props) => {
 
@@ -32,10 +35,11 @@ const SignIn = (props) => {
       console.log('Response:', data.user);
       setUser(data.user)
       // После успешной регистрации или входа, перенаправьте пользователя на главную страницу игры и выполните сброс стека навигации
-      props.navigation.reset({
-        index: 0,
-        routes: [{ name: 'Main' }] // Замените 'Main' на имя вашего главного экрана игры
-      });
+      AsyncStorage.setItem('userData', JSON.stringify(data.user))
+        .then(() => {
+          // Выполните сброс стека навигации и переход на главный экран
+          navigation.navigate('Main')
+        })
     }).catch(error => {
 
     });

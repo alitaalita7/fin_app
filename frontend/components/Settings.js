@@ -4,6 +4,9 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
 import { TextInput } from 'react-native-gesture-handler'
 import { Picker } from '@react-native-picker/picker';
 import UserContext from './UserContext'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { CommonActions } from '@react-navigation/native';
 
 const Settings = () => {
 
@@ -11,6 +14,7 @@ const Settings = () => {
     const [selectedClass, setSelectedClass] = useState(user.school_class);
     const [login, setLogin] = useState(user.login);
     const [password, setPassword] = useState(user.password);
+    const navigation = useNavigation(); // Используем хук useNavigation для доступа к навигации
 
     const handelSaveUserData = () => {
         if (login && password && selectedClass) {
@@ -52,6 +56,19 @@ const Settings = () => {
 
     const handlePasswordChange = (password) => {
         setPassword(password);
+    }
+
+    const handleExist = () => {
+        AsyncStorage.removeItem('userData')
+            .then(() => {
+                // Выполните сброс стека навигации и переход на главный экран
+                navigation.dispatch(
+                    CommonActions.reset({
+                        index: 0,
+                        routes: [{ name: 'SignIn' }] // Замените 'Main' на имя вашего главного экрана игры
+                    })
+                );
+            })
     }
 
     return (
@@ -100,7 +117,7 @@ const Settings = () => {
                 </View>
             </View>
             <View style={styles.buttonExitContainer}>
-                <TouchableOpacity style={styles.buttonExit}>
+                <TouchableOpacity onPress={handleExist} style={styles.buttonExit}>
                     <Text style={styles.textSave}>Выйти</Text>
                 </TouchableOpacity>
             </View>
